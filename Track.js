@@ -3,12 +3,19 @@
 import { context, main } from './App.js';
 import Source from './Source.js';
 
+// Create wave from buffers, layer (unary or) when necessary
+// do wave buffer in wasm and javascrip typed array
+
 export default class Track {
     constructor() {
         // Consolidate nodes to one gain node
-        // this.source = context.createGain();
-        // this.source.gain.value = .5;
-        // this.source.connect(context);
+        this.context = new AudioContext();
+
+        this.gainNode = this.context.createGain();
+        this.gainNode.gain.value = .5;
+        this.gainNode.connect(this.context);
+
+        this.context.connect(context.destination);
 
         this.endTime = 0;
         this.pixelSecondRatio = 1;
@@ -64,7 +71,7 @@ export default class Track {
 
     addSource(source, duration, name) {
         // Tip: Use start and stop for layering
-        this.sources.push(new Source(this, source, duration, this.endTime, name));
+        this.sources.push(new Source(this, this.gainNode, duration, this.endTime, name));
         this.endTime += duration;
     }
 }
