@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            width: 100vw;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
+        
+        nav {
+            width: 100vw;
+            flex-basis: 32px;
+        }
+        
+        nav ul {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            font-size: 12px;
+            margin: 0;
+            padding: 8px;
+        }
+        
+        main {
+            overflow-x: scroll;
+            /*  handle by full page */
+            overflow-y: auto;
+            width: 100vw;
+            flex-basis: 100%;
+            background-color: lightgray;
+        }
+        
+        * {
+            box-sizing: border-box;
+            font-family: BlinkMacSystemFont;
+        }
+        /* need fixe dtack number */
+        
+        .track {
+            min-width: 100vw;
+            width: fit-content;
+            height: 80px;
+            background-color: lightblue;
+            border: gray 1px solid;
+            margin: 10px 0;
+            position: relative;
+            display: flex;
+            flex-direction: row;
+        }
+        
+        .source {
+            height: 80px;
+            min-width: 1px;
+            background-color: blue;
+            border-radius: 6px;
+        }
+        /*.drop__container {
+            pointer-events: none;
+            will-change: transform;
+            z-index: 1;
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 100vw;
+            height: 100vh;
+        }
+        
+        .drop__container::before {
+            content: "";
+            will-change: opacity;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, .6);
+            opacity: 0;
+            transition: opacity ease .3s;
+        }
+        
+        .drop__target {
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 100vw;
+            height: 40vh;
+            background-color: white;
+            box-shadow: 0 0 20px 0 rgba(0, 0, 0, .1);
+            transform: translateY(102%);
+            transition: transform ease .3s;
+        }
+        
+        .drop__container--visible::before {
+            opacity: 1;
+        }
+        
+        .drop__container--visible .drop__target {
+            transform: none;
+        }*/
+    </style>
+    <nav>
+        <ul>
+            <li>File</li>
+            <li>Edit</li>
+        </ul>
+    </nav>
+    <main>
+        <button class="add-track">Create Track</button>
+        <!-- Create progress line -->
+        <button class="play" onclick="playall()">Play</button>
+        <!--<aside class="drop__container">
+            <section class="drop__target"></section>
+        </aside>-->
+    </main>
+    <script>
+        //todo
+        // sessionstorage
+        // localstorage straegy
+        // labels
+        // colors
+        // weveforms
+        // show before buffer (percieved perf)
+        // waveform for micorophone
+        // audio pixel ratio
+        // zoom Canvas?
+        // - zoom each track (gestures)
+        // clipping and moving
+        // snapping and 
+        // perceived perf, load audio async
+        //  fixed track left
+        // record audio ux
+        // expor file medirecorder
+
+        // clip and rearange ONE audio file
+
+        const createTrack = () =>
+            tracks.push(new Track());
+
+        function invalidAudio() {
+            alert('Invalid audio');
+        }
+
+        const context = new AudioContext();
+        const tracks = [];
+        const entry = document.querySelector('main');
+        const addTrack = document.querySelector('.add-track');
+
+        const dropContainer = document.querySelector('.drop__container');
+        const dropTarget = document.querySelector('.drop__target');
+
+        addTrack.addEventListener('click', e => {
+            createTrack();
+        });
+
+        window.addEventListener('dragover', e => {
+            e.preventDefault();
+
+            // dropContainer.classList.add('drop__container--visible');
+
+            // window.addEventListener('dragend', function() {
+            //     // do check first
+            //     dropContainer.classList.remove('drop__container--visible');
+            // }, {
+            //     once: true
+            // });
+        });
+
+
+        window.addEventListener('drop', function(e) {
+            e.preventDefault();
+        })
+
+        // perf later ,only add on drag start
+
+
+        // each track is a Node all convergint to the context
+        function Track() {
+            // consolidate nodes to; one gain node
+            // this.source = context.createGain();
+            // this.source.gain.value = .5;
+
+            // this.source.connect(context);
+
+            this.totalTime = 0;
+            this.endTime = 0;
+            this.pixelSecondRatio = 1;
+            this.name = name;
+
+            this.sources = [];
+
+            this.element = document.createElement('div');
+            this.element.classList.add('track');
+
+            entry.insertAdjacentElement('beforeend', this.element);
+
+            this.element.addEventListener('drop', async e => {
+                e.preventDefault();
+
+                const {
+                    dataTransfer: data
+                } = e;
+
+                if (data) {
+                    // add source first athen add actual thigns to soruce
+                    const [item, ] = data.items;
+                    const entry = item.webkitGetAsEntry();
+
+                    const file = await new Promise((...handlers) => {
+                        entry.file(...handlers);
+                    });
+
+                    const isAudio = /^audio/.test(file.type);
+
+                    if (!isAudio)
+                        return invalidAudio();
+
+                    const buffer = await new Promise((resolve, reject) => {
+                        const fr = new FileReader();
+
+                        fr.addEventListener('load', () => {
+                            context.decodeAudioData(fr.result, resolve, reject);
+                        });
+
+                        fr.addEventListener('error', reject);
+
+                        fr.readAsArrayBuffer(file);
+                    });
+
+                    const source = context.createBufferSource();
+
+                    source.buffer = buffer;
+                    source.connect(context.destination);
+
+                    this.addSource(source, buffer.duration);
+                }
+
+            });
+        }
+
+        Track.prototype.play = function() {
+            // star t, on drag charnge offseitme
+            this.sources.forEach(source => {
+                source.start();
+                // play forever or stop?
+            });
+        };
+
+        Track.prototype.addSource = function(source, duration) {
+            // use start and stop for layering
+            this.sources.push(new Source(this, source, duration, this.endTime));
+
+            this.totalTime += duration;
+            this.endTime += duration;
+        }
+
+        function Source(track, source, duration, off) {
+            this.source = source;
+            this.duration = duration;
+            this.time = track.endTime;
+            this.offset = off;
+
+            this.element = document.createElement('div');
+            this.element.classList.add('source');
+            this.element.style.minWidth = `${duration}px`;
+            // this.element.style.transform = `translateX(${track.endTime}px)`;
+
+            this.element.addEventListener('drag', function() {
+                // change offset
+            });
+
+            track.element.appendChild(this.element);
+
+        }
+
+        Source.prototype.start = function() {
+            this.source.start(this.offset);
+        };
+
+        function playall() {
+            tracks.forEach(track => track.play());
+        }
+
+
+        createTrack();
+    </script>
+</body>
+
+</html>
