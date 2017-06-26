@@ -1,0 +1,114 @@
+:root {
+    --track-height: 80px;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+}
+
+nav {
+    width: 100vw;
+    flex-basis: 32px;
+}
+
+nav ul {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    list-style: none;
+}
+
+nav ul li {
+    font-size: 12px;
+    margin: 0;
+    padding: 8px;
+}
+
+main {
+    overflow-x: scroll;
+    /*  handle by full page */
+    overflow-y: auto;
+    width: 100vw;
+    flex-basis: 100%;
+    background-color: #f4f5f7;
+}
+
+* {
+    box-sizing: padding-box;
+    font-family: BlinkMacSystemFont;
+}
+
+
+/* need fixe dtack number */
+
+.track:first-of-type {
+    border-top: gray 1px solid;
+}
+
+.track {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    width: fit-content;
+    min-width: 100vw;
+    height: var( --track-height);
+    background-color: #e3e7ed;
+    border-bottom: gray 1px solid;
+}
+
+.track__source {
+    height: var(--track-height);
+    min-width: 1px;
+    background-color: #1170ff;
+    border-radius: 2px;
+}
+
+
+/*.drop__container {
+pointer-events: none;
+will-change: transform;
+z-index: 1;
+position: fixed;
+left: 0;
+bottom: 0;
+width: 100vw;
+height: 100vh;
+}
+
+.drop__container::before {
+content: "";
+will-change: opacity;
+position: fixed;
+top: 0;
+left: 0;
+width: 100vw;
+height: 100vh;
+background-color: rgba(0, 0, 0, .6);
+opacity: 0;
+transition: opacity ease .3s;
+}
+
+.drop__target {
+position: absolute;
+left: 0;
+bottom: 0;
+width: 100vw;
+height: 40vh;
+background-color: white;
+box-shadow: 0 0 20px 0 rgba(0, 0, 0, .1);
+transform: translateY(102%);
+transition: transform ease .3s;
+}
+
+.drop__container--visible::before {
+opacity: 1;
+}
+
+.drop__container--visible .drop__target {
+transform: none;
+}*/
