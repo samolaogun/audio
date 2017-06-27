@@ -17,11 +17,7 @@ export default class Source {
         this.element.addEventListener('drag', this._handleDrag);
     }
     
-    async _handleDrag () {
-    
-    }
+    async _handleDrag (e) {}
 
-    start() {
-        this.sourceNode.start(this.offset);
-    }
+    start() { this.track.start(this.offset); }
 }
