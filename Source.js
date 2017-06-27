@@ -1,12 +1,13 @@
 'use strict';
 
 export default class Source {
-    constructor(track, { duration, name }) {
+    constructor(track, source, { duration, name }) {
         this.track = track;
-        this.offset = track.offset;
-        
+        this.source = source;
         this.name = name;
         this.duration = duration;
+        
+        this.offset = track.offset;
         this.time = track.totalTime;
 
         this.element = document.createElement('div');
