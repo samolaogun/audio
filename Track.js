@@ -24,9 +24,10 @@ export default class Track {
         const entry = item.webkitGetAsEntry();
         
         const file = await new Promise((...handlers) => { entry.file(...handlers); });
+        const { duration, name, type } = file;
         
-        if (/^audio/.test(file.type))
-            this.addSource(file, this._sourceFromFile(file));
+        if (/^audio/.test(type))
+            this.addSource(this._sourceFromFile(file), { duration, name });
     }
     
     _sourceFromFile() {
@@ -36,8 +37,8 @@ export default class Track {
             const fileReader = new FileReader();
 
             fileReader.addEventListener('load', () => context.decodeAudioData(fileReader.result, resolve, reject));
-
             fileReader.addEventListener('error', reject);
+            
             fileReader.readAsArrayBuffer(file);
         });
 
