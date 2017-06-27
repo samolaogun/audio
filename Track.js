@@ -25,8 +25,11 @@ export default class Track {
         
         const file = await new Promise((...handlers) => { entry.file(...handlers); });
         
-        if (!(/^audio/.test(file.type))) return;
-
+        if (/^audio/.test(file.type))
+            this.addSource(file, this._sourceFromFile(file));
+    }
+    
+    _sourceFromFile() {
         const source = context.createBufferSource();
 
         source.buffer = await new Promise((resolve, reject) => {
@@ -39,8 +42,7 @@ export default class Track {
         });
 
         source.connect(context.destination);
-
-        this.addSource(file, source);
+        return source;
     }
 
     start() {
