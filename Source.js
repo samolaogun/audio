@@ -1,14 +1,12 @@
 'use strict';
 
-import Colors from './Colors.js';
-
 export default class Source {
-    constructor(track, sourceNode, duration, offset, name) {
-        this.color = Colors[Math.floor(Math.random() * Colors.length)];
+    constructor(track, { duration, name }) {
         this.name = name;
-        this.sourceNode = sourceNode;
+        
         this.duration = duration;
-        this.offset = offset;
+        this.track= track;
+        this.offset = track.offset;
 
         // Append to back of track by default
         this.startTime = track.endTime;
