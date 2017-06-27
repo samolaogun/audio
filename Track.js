@@ -18,7 +18,8 @@ export default class Track {
     async _handleDrop(e) {
         e.preventDefault();
 
-        if (!e.dataTransfer) return;
+        if (!e.dataTransfer)
+            return;
 
         const [item, ] = e.dataTransfer.items;
         const entry = item.webkitGetAsEntry();
@@ -48,8 +49,8 @@ export default class Track {
 
     start() { this.sources.forEach(source => source.start()); }
 
-    addSource({name}, {duration}) { 
-        this.sources.push(new Source(this, { duration, name }));
+    addSource(source, {duration, name}) { 
+        this.sources.push(new Source(this, source, { duration, name }));
         this.totalTime += duration;
     }
 }
