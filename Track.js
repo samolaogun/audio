@@ -45,9 +45,7 @@ export default class Track {
         return source;
     }
 
-    start() {
-        this.sources.forEach(source => source.start());
-    }
+    start() { this.sources.forEach(source => source.start()); }
 
     addSource({name}, {duration}) { 
         this.sources.push(new Source(this, { duration, name }));
